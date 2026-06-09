@@ -104,7 +104,7 @@ export default function MainLayout() {
       <Divider sx={{ borderColor: '#f1f5f9' }} />
 
       {/* Nav */}
-      <Box sx={{ flex: 1, overflowY: 'auto', px: 1.5, py: 1.5 }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', px: 1.5, py: 1.5, scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
         {menuGroups.map((group) => (
           <Box key={group.section} mb={0.5}>
             <Typography variant="caption" sx={{
