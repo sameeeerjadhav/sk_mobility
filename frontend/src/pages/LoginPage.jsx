@@ -57,8 +57,8 @@ export default function LoginPage() {
           </Box>
 
           <Typography variant="caption" color="text.secondary" display="block" textAlign="center" mt={3}>
-            Admin: admin@skmobility.com / Admin@123<br />
-            Dealer: dealer@skmobility.com / Dealer@123
+            Admin: admin@skmobility.com / password<br />
+            Dealer: dealer@skmobility.com / password
           </Typography>
         </CardContent>
       </Card>
