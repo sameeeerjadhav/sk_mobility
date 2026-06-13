@@ -22,6 +22,10 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import DealerRegisterPage from './pages/DealerRegisterPage';
 import NotificationsPage from './pages/NotificationsPage';
+import HRPage from './pages/HRPage';
+import PartnersPage from './pages/PartnersPage';
+import ExpensesPage from './pages/ExpensesPage';
+import FinancePage from './pages/FinancePage';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -51,13 +55,17 @@ export default function App() {
           <Route path="/notifications" element={<NotificationsPage />} />
 
           <Route element={<ProtectedRoute roles={['super_admin']} />}>
-            <Route path="/dealers" element={<DealersPage />} />
-            <Route path="/inventory" element={<InventoryPage />} />
-            <Route path="/spare-parts" element={<SparePartsPage />} />
-            <Route path="/billing" element={<BillingPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-          </Route>
+              <Route path="/dealers" element={<DealersPage />} />
+              <Route path="/inventory" element={<InventoryPage />} />
+              <Route path="/spare-parts" element={<SparePartsPage />} />
+              <Route path="/billing" element={<BillingPage />} />
+              <Route path="/reports" element={<ReportsPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/hr" element={<HRPage />} />
+              <Route path="/partners" element={<PartnersPage />} />
+              <Route path="/expenses" element={<ExpensesPage />} />
+              <Route path="/finance" element={<FinancePage />} />
+            </Route>
         </Route>
       </Route>
 

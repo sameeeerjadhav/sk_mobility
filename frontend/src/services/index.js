@@ -114,3 +114,41 @@ export const notificationsAPI = {
   markRead: (id) => api.patch(`/notifications/${id}/read`),
   markAllRead: () => api.patch('/notifications/read-all'),
 };
+
+// ─── NEW MODULES ───────────────────────────────────────────────
+
+export const hrAPI = {
+  stats: () => api.get('/hr/stats'),
+  employees: (params) => api.get('/hr/employees', { params }),
+  createEmployee: (data) => api.post('/hr/employees', data),
+  updateEmployee: (id, data) => api.put(`/hr/employees/${id}`, data),
+  salaries: (employeeId) => api.get(`/hr/employees/${employeeId}/salaries`),
+  createSalary: (data) => api.post('/hr/salaries', data),
+};
+
+export const partnersAPI = {
+  stats: () => api.get('/partners/stats'),
+  list: () => api.get('/partners'),
+  create: (data) => api.post('/partners', data),
+  transactions: (partnerId) => api.get(`/partners/${partnerId}/transactions`),
+  allTransactions: (params) => api.get('/partner-transactions', { params }),
+  createTransaction: (data) => api.post('/partner-transactions', data),
+};
+
+export const expensesAPI = {
+  stats: () => api.get('/expenses/stats'),
+  categories: () => api.get('/expenses/categories'),
+  list: (params) => api.get('/expenses', { params }),
+  create: (data) => api.post('/expenses', data),
+  delete: (id) => api.delete(`/expenses/${id}`),
+};
+
+export const financeAPI = {
+  stats: () => api.get('/finance/stats'),
+  bankAccounts: () => api.get('/finance/bank-accounts'),
+  createBankAccount: (data) => api.post('/finance/bank-accounts', data),
+  updateBankAccount: (id, data) => api.put(`/finance/bank-accounts/${id}`, data),
+  loans: () => api.get('/finance/loans'),
+  createLoan: (data) => api.post('/finance/loans', data),
+  updateLoan: (id, data) => api.put(`/finance/loans/${id}`, data),
+};

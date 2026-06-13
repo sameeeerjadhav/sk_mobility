@@ -7,6 +7,7 @@ import {
   Menu as MenuIcon, Dashboard, Store, DirectionsCar, ShoppingCart, Payment,
   Inventory, People, Build, Logout, Notifications, Receipt,
   AdminPanelSettings, Assessment, Handyman, Search, Settings, ElectricCar,
+  Groups, Handshake, AccountBalance, RequestQuote,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
@@ -40,6 +41,12 @@ const adminMenu = [
   ]},
   { section: 'SYSTEM', items: [
     { text: 'Admin', icon: <AdminPanelSettings fontSize="small" />, path: '/admin' },
+  ]},
+  { section: 'BUSINESS', items: [
+    { text: 'HR Management', icon: <Groups fontSize="small" />, path: '/hr' },
+    { text: 'Partners', icon: <Handshake fontSize="small" />, path: '/partners' },
+    { text: 'Office Expenses', icon: <RequestQuote fontSize="small" />, path: '/expenses' },
+    { text: 'Bank & Loans', icon: <AccountBalance fontSize="small" />, path: '/finance' },
   ]},
 ];
 

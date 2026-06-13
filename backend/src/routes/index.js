@@ -98,4 +98,36 @@ router.get('/notifications/unread-count', c.unreadCount);
 router.patch('/notifications/:id/read', c.markNotificationRead);
 router.patch('/notifications/read-all', c.markAllNotificationsRead);
 
+// ─── HR MANAGEMENT ───────────────────────────────────────────
+router.get('/hr/stats', authorizeRoles('super_admin'), c.hrStats);
+router.get('/hr/employees', authorizeRoles('super_admin'), c.listEmployees);
+router.post('/hr/employees', authorizeRoles('super_admin'), c.createEmployee);
+router.put('/hr/employees/:id', authorizeRoles('super_admin'), c.updateEmployee);
+router.get('/hr/employees/:employeeId/salaries', authorizeRoles('super_admin'), c.listSalaryRecords);
+router.post('/hr/salaries', authorizeRoles('super_admin'), c.createSalaryRecord);
+
+// ─── PARTNER TRANSACTIONS ────────────────────────────────────
+router.get('/partners/stats', authorizeRoles('super_admin'), c.partnerStats);
+router.get('/partners', authorizeRoles('super_admin'), c.listPartners);
+router.post('/partners', authorizeRoles('super_admin'), c.createPartner);
+router.get('/partners/:partnerId/transactions', authorizeRoles('super_admin'), c.listPartnerTransactions);
+router.get('/partner-transactions', authorizeRoles('super_admin'), c.listAllTransactions);
+router.post('/partner-transactions', authorizeRoles('super_admin'), c.createPartnerTransaction);
+
+// ─── OFFICE EXPENSES ─────────────────────────────────────────
+router.get('/expenses/stats', authorizeRoles('super_admin'), c.expenseStats);
+router.get('/expenses/categories', authorizeRoles('super_admin'), c.listExpenseCategories);
+router.get('/expenses', authorizeRoles('super_admin'), c.listExpenses);
+router.post('/expenses', authorizeRoles('super_admin'), c.createExpense);
+router.delete('/expenses/:id', authorizeRoles('super_admin'), c.deleteExpense);
+
+// ─── BANK & LOANS ────────────────────────────────────────────
+router.get('/finance/stats', authorizeRoles('super_admin'), c.financeStats);
+router.get('/finance/bank-accounts', authorizeRoles('super_admin'), c.listBankAccounts);
+router.post('/finance/bank-accounts', authorizeRoles('super_admin'), c.createBankAccount);
+router.put('/finance/bank-accounts/:id', authorizeRoles('super_admin'), c.updateBankAccount);
+router.get('/finance/loans', authorizeRoles('super_admin'), c.listLoans);
+router.post('/finance/loans', authorizeRoles('super_admin'), c.createLoan);
+router.put('/finance/loans/:id', authorizeRoles('super_admin'), c.updateLoan);
+
 module.exports = router;

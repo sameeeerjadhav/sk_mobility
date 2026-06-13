@@ -1,0 +1,9 @@
+node_modules/
+.env
+uploads/invoices/*.pdf
+uploads/images/*
+!uploads/.gitkeep
+logs/
+*.log
+npm-debug.log*
+.DS_Store

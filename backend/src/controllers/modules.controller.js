@@ -10,6 +10,7 @@ const billingService = require('../services/billing.service');
 const dashboardService = require('../services/dashboard.service');
 const adminService = require('../services/admin.service');
 const notificationsService = require('../services/notifications.service');
+const bizService = require('../services/business.service');
 
 const wrap = (fn) => asyncHandler(async (req, res) => {
   const result = await fn(req);
@@ -118,4 +119,36 @@ module.exports = {
   markNotificationRead: wrap((req) => notificationsService.markRead(req.params.id, req.user.id).then(() => ({ data: { message: 'Marked read' } }))),
   markAllNotificationsRead: wrap((req) => notificationsService.markAllRead(req.user.id).then(() => ({ data: { message: 'All marked read' } }))),
   unreadCount: wrap((req) => notificationsService.getUnreadCount(req.user.id).then((count) => ({ data: { count } }))),
+
+  // HR Management
+  hrStats: wrap(() => bizService.getHRStats().then((data) => ({ data }))),
+  listEmployees: wrap((req) => bizService.listEmployees(req.query).then((data) => data)),
+  createEmployee: wrap((req) => bizService.createEmployee(req.body).then((data) => ({ data }))),
+  updateEmployee: wrap((req) => bizService.updateEmployee(req.params.id, req.body).then((data) => ({ data }))),
+  listSalaryRecords: wrap((req) => bizService.listSalaryRecords(req.params.employeeId).then((data) => ({ data }))),
+  createSalaryRecord: wrap((req) => bizService.createSalaryRecord(req.body).then((data) => ({ data }))),
+
+  // Partner Transactions
+  partnerStats: wrap(() => bizService.getPartnerStats().then((data) => ({ data }))),
+  listPartners: wrap(() => bizService.listPartners().then((data) => ({ data }))),
+  createPartner: wrap((req) => bizService.createPartner(req.body).then((data) => ({ data }))),
+  listPartnerTransactions: wrap((req) => bizService.listPartnerTransactions(req.params.partnerId).then((data) => ({ data }))),
+  listAllTransactions: wrap((req) => bizService.listAllTransactions(req.query).then((data) => data)),
+  createPartnerTransaction: wrap((req) => bizService.createPartnerTransaction(req.body).then((data) => ({ data }))),
+
+  // Office Expenses
+  expenseStats: wrap(() => bizService.getExpenseStats().then((data) => ({ data }))),
+  listExpenseCategories: wrap(() => bizService.listExpenseCategories().then((data) => ({ data }))),
+  listExpenses: wrap((req) => bizService.listExpenses(req.query).then((data) => data)),
+  createExpense: wrap((req) => bizService.createExpense(req.body).then((data) => ({ data }))),
+  deleteExpense: wrap((req) => bizService.deleteExpense(req.params.id).then(() => ({ data: { message: 'Deleted' } }))),
+
+  // Bank & Loans
+  financeStats: wrap(() => bizService.getFinanceStats().then((data) => ({ data }))),
+  listBankAccounts: wrap(() => bizService.listBankAccounts().then((data) => ({ data }))),
+  createBankAccount: wrap((req) => bizService.createBankAccount(req.body).then((data) => ({ data }))),
+  updateBankAccount: wrap((req) => bizService.updateBankAccount(req.params.id, req.body).then((data) => ({ data }))),
+  listLoans: wrap(() => bizService.listLoans().then((data) => ({ data }))),
+  createLoan: wrap((req) => bizService.createLoan(req.body).then((data) => ({ data }))),
+  updateLoan: wrap((req) => bizService.updateLoan(req.params.id, req.body).then((data) => ({ data }))),
 };
