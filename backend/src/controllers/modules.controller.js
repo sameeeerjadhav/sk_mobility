@@ -90,6 +90,7 @@ module.exports = {
   listBills: wrap((req) => billingService.listBills(req.query).then((data) => ({ data }))),
   getBill: wrap((req) => billingService.getBillDetail(req.params.id).then((data) => ({ data }))),
   createBill: wrap((req) => billingService.createBill(req.body, req.user.id).then((data) => ({ data }))),
+  createWarrantyBill: wrap((req) => billingService.createWarrantyBill(req.body, req.user.id).then((data) => ({ data }))),
   generateBillPDF: wrap((req) => billingService.generatePDF(req.params.id)),
   listTaxes: wrap(() => billingService.listTaxes().then((data) => ({ data }))),
 
@@ -145,6 +146,9 @@ module.exports = {
   // Office Expenses
   expenseStats: wrap(() => bizService.getExpenseStats().then((data) => ({ data }))),
   listExpenseCategories: wrap(() => bizService.listExpenseCategories().then((data) => ({ data }))),
+  createExpenseCategory: wrap((req) => bizService.createExpenseCategory(req.body).then((data) => ({ data }))),
+  updateExpenseCategory: wrap((req) => bizService.updateExpenseCategory(req.params.id, req.body).then((data) => ({ data }))),
+  deleteExpenseCategory: wrap((req) => bizService.deleteExpenseCategory(req.params.id).then(() => ({ data: { message: 'Deleted' } }))),
   listExpenses: wrap((req) => bizService.listExpenses(req.query).then((data) => data)),
   createExpense: wrap((req) => bizService.createExpense(req.body).then((data) => ({ data }))),
   updateExpense: wrap((req) => bizService.updateExpense(req.params.id, req.body).then((data) => ({ data }))),

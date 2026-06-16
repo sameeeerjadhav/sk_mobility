@@ -92,8 +92,10 @@ const create = async (data, userId, req) => {
     const [orderResult] = await conn.query(
       `INSERT INTO orders (order_number, order_type, dealer_id, customer_name, customer_phone, customer_email,
        status, subtotal, tax_amount, discount_amount, total_amount, notes, delivery_address,
-       expected_delivery_date, created_by)
-       VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?)`,
+       expected_delivery_date, created_by,
+       chassis_no, motor_no, battery_capacity, color, customer_aadhaar, customer_pan,
+       customer_address, pm_drive_incentive, state_subsidy)
+       VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         orderNumber, orderType, dealerId,
         orderType === 'customer' ? data.customerName : null,
@@ -101,6 +103,10 @@ const create = async (data, userId, req) => {
         orderType === 'customer' ? data.customerEmail : null,
         subtotal, taxAmount, discount, totalAmount,
         data.notes, data.deliveryAddress, data.expectedDeliveryDate, userId,
+        data.chassisNo || null, data.motorNo || null, data.batteryCapacity || null,
+        data.color || null, data.customerAadhaar || null, data.customerPan || null,
+        data.customerAddress || null,
+        data.pmDriveIncentive || 0, data.stateSubsidy || 0,
       ]
     );
 

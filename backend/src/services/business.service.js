@@ -178,6 +178,25 @@ const listExpenseCategories = async () => {
   return rows;
 };
 
+const createExpenseCategory = async (body) => {
+  const { name, description } = body;
+  if (!name?.trim()) throw new Error('Category name is required');
+  const [result] = await db.query('INSERT INTO expense_categories (name, description) VALUES (?, ?)', [name.trim(), description || null]);
+  const [[cat]] = await db.query('SELECT * FROM expense_categories WHERE id = ?', [result.insertId]);
+  return cat;
+};
+
+const updateExpenseCategory = async (id, body) => {
+  const { name, description } = body;
+  await db.query('UPDATE expense_categories SET name = ?, description = ? WHERE id = ?', [name, description || null, id]);
+  const [[cat]] = await db.query('SELECT * FROM expense_categories WHERE id = ?', [id]);
+  return cat;
+};
+
+const deleteExpenseCategory = async (id) => {
+  await db.query('DELETE FROM expense_categories WHERE id = ?', [id]);
+};
+
 const listExpenses = async (query = {}) => {
   const { category_id, month, year, page = 1, limit = 50 } = query;
   const offset = (page - 1) * limit;
@@ -325,7 +344,8 @@ module.exports = {
   createPartnerTransaction, updatePartnerTransaction, deletePartnerTransaction,
   getPartnerStats,
   // Expenses
-  listExpenseCategories, listExpenses, createExpense, updateExpense, deleteExpense, getExpenseStats,
+  listExpenseCategories, createExpenseCategory, updateExpenseCategory, deleteExpenseCategory,
+  listExpenses, createExpense, updateExpense, deleteExpense, getExpenseStats,
   // Finance
   listBankAccounts, createBankAccount, updateBankAccount, deleteBankAccount,
   listLoans, createLoan, updateLoan, deleteLoan, getFinanceStats,

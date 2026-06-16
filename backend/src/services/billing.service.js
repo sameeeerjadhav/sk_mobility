@@ -14,8 +14,12 @@ const getCompanySettings = async () => {
 
 const fetchBillData = async (billId) => {
   const [bills] = await db.query(
-    `SELECT b.*, o.order_number, o.order_type, o.customer_name, o.customer_phone, o.customer_email,
-            o.delivery_address, d.business_name AS dealer_name, d.dealer_code, d.gst_number AS dealer_gst,
+    `SELECT b.*, o.order_number, o.order_type,
+            o.customer_name, o.customer_phone, o.customer_email,
+            o.delivery_address, o.chassis_no, o.motor_no, o.battery_capacity,
+            o.color, o.customer_aadhaar, o.customer_pan, o.customer_address,
+            o.pm_drive_incentive, o.state_subsidy,
+            d.business_name AS dealer_name, d.dealer_code, d.gst_number AS dealer_gst,
             d.phone AS dealer_phone, d.email AS dealer_email, d.pan_number AS dealer_pan
      FROM bills b
      LEFT JOIN orders o ON b.order_id = o.id
@@ -35,6 +39,26 @@ const fetchBillData = async (billId) => {
   const bill = {
     ...bills[0],
     dealer_address: dealerAddr[0]?.addr || null,
+    // merge vehicle fields from bills table overriding order fields if set
+    chassis_no: bills[0].chassis_no || null,
+    motor_no: bills[0].motor_no || null,
+    battery_capacity: bills[0].battery_capacity || null,
+    color: bills[0].color || null,
+    customer_aadhaar: bills[0].customer_aadhaar || null,
+    customer_pan: bills[0].customer_pan || null,
+    customer_address: bills[0].customer_address || bills[0].delivery_address || null,
+    pm_drive_incentive: bills[0].pm_drive_incentive || 0,
+    state_subsidy: bills[0].state_subsidy || 0,
+    amount_in_words: bills[0].amount_in_words || null,
+    vehicle_model: bills[0].vehicle_model || null,
+    registration_no: bills[0].registration_no || null,
+    sac_code: bills[0].sac_code || '999799',
+    warranty_start: bills[0].warranty_start || null,
+    warranty_end: bills[0].warranty_end || null,
+    warranty_period: bills[0].warranty_period || null,
+    customer_city: bills[0].customer_city || null,
+    customer_state: bills[0].customer_state || 'Maharashtra',
+    state_code: bills[0].state_code || 'MH',
   };
 
   const [items] = await db.query('SELECT * FROM bill_items WHERE bill_id = ? ORDER BY id', [billId]);
@@ -51,13 +75,26 @@ const createBill = async (data, userId) => {
 
     const [result] = await conn.query(
       `INSERT INTO bills (bill_number, bill_type, dealer_id, order_id, service_request_id,
-       subtotal, discount_amount, tax_amount, total_amount, status, notes, issued_at, created_by)
-       VALUES (?,?,?,?,?,?,?,?,?,'issued',?,NOW(),?)`,
-      [billNumber, data.billType, data.dealerId, data.orderId, data.serviceRequestId,
-        data.subtotal, data.discountAmount || 0, data.taxAmount || 0, data.totalAmount, data.notes, userId]
+       subtotal, discount_amount, tax_amount, total_amount, status, notes, issued_at, created_by,
+       chassis_no, motor_no, battery_capacity, color, customer_aadhaar, customer_pan,
+       customer_address, pm_drive_incentive, state_subsidy, amount_in_words, vehicle_model,
+       registration_no, sac_code, odometer_reading, vehicle_sale_date, chassis_registration,
+       warranty_start, warranty_end, warranty_period, customer_city, customer_state, state_code)
+       VALUES (?,?,?,?,?,?,?,?,?,'issued',?,NOW(),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [billNumber, data.billType || 'vehicle', data.dealerId, data.orderId, data.serviceRequestId,
+        data.subtotal, data.discountAmount || 0, data.taxAmount || 0, data.totalAmount, data.notes, userId,
+        data.chassisNo || null, data.motorNo || null, data.batteryCapacity || null,
+        data.color || null, data.customerAadhaar || null, data.customerPan || null,
+        data.customerAddress || null, data.pmDriveIncentive || 0, data.stateSubsidy || 0,
+        data.amountInWords || null, data.vehicleModel || null,
+        data.registrationNo || null, data.sacCode || '999799', data.odometerReading || null,
+        data.vehicleSaleDate || null, data.chassisRegistration || null,
+        data.warrantyStart || null, data.warrantyEnd || null, data.warrantyPeriod || null,
+        data.customerCity || null, data.customerState || 'Maharashtra', data.stateCode || 'MH',
+      ]
     );
 
-    for (const item of data.items) {
+    for (const item of data.items || []) {
       await conn.query(
         `INSERT INTO bill_items (bill_id, item_type, description, quantity, unit_price, tax_rate, tax_amount, total_amount, reference_id)
          VALUES (?,?,?,?,?,?,?,?,?)`,
@@ -107,6 +144,11 @@ const createBillFromOrder = async (order, userId) => {
     ? `Customer: ${order.customer_name} | ${order.customer_phone}`
     : `Dealer: ${order.dealer_name || 'N/A'}`;
 
+  const vehicleModel = items.map(i => i.description).join(', ');
+  const totalAfterSubsidy = order.total_amount - (order.pm_drive_incentive || 0) - (order.state_subsidy || 0);
+  const { amountInWords: aw } = require('../utils/invoicePdf');
+  const amtWords = aw(totalAfterSubsidy);
+
   const bill = await createBill({
     billType: 'vehicle',
     dealerId: order.dealer_id || null,
@@ -116,6 +158,18 @@ const createBillFromOrder = async (order, userId) => {
     taxAmount: order.tax_amount || 0,
     totalAmount: order.total_amount,
     notes: `Auto-generated for order ${order.order_number}. ${partyLabel}`,
+    // vehicle-specific
+    chassisNo: order.chassis_no,
+    motorNo: order.motor_no,
+    batteryCapacity: order.battery_capacity,
+    color: order.color,
+    customerAadhaar: order.customer_aadhaar,
+    customerPan: order.customer_pan,
+    customerAddress: order.customer_address || order.delivery_address,
+    pmDriveIncentive: order.pm_drive_incentive || 0,
+    stateSubsidy: order.state_subsidy || 0,
+    amountInWords: amtWords,
+    vehicleModel,
     items,
   }, userId);
 
@@ -203,6 +257,57 @@ const listTaxes = async () => {
   return rows;
 };
 
+const createWarrantyBill = async (data, userId) => {
+  const { amountInWords: aw } = require('../utils/invoicePdf');
+  const totalAmt = Number(data.totalAmount || 0);
+  const taxAmt = Number(data.taxAmount || 0);
+  const subtotal = totalAmt - taxAmt;
+
+  const bill = await createBill({
+    billType: 'warranty',
+    dealerId: data.dealerId || null,
+    orderId: null,
+    serviceRequestId: null,
+    subtotal,
+    discountAmount: 0,
+    taxAmount: taxAmt,
+    totalAmount: totalAmt,
+    notes: data.notes || 'Extended Warranty Certificate',
+    customerAadhaar: data.customerAadhaar,
+    customerPan: data.customerPan,
+    customerAddress: data.customerAddress,
+    customerCity: data.customerCity,
+    customerState: data.customerState || 'Maharashtra',
+    stateCode: data.stateCode || 'MH',
+    chassisNo: data.chassisNo,
+    motorNo: data.motorNo,
+    batteryCapacity: data.batteryCapacity,
+    color: data.color,
+    vehicleModel: data.vehicleModel,
+    registrationNo: data.registrationNo,
+    sacCode: data.sacCode || '999799',
+    odometerReading: data.odometerReading,
+    vehicleSaleDate: data.vehicleSaleDate,
+    chassisRegistration: data.chassisRegistration,
+    warrantyStart: data.warrantyStart,
+    warrantyEnd: data.warrantyEnd,
+    warrantyPeriod: data.warrantyPeriod,
+    amountInWords: aw(totalAmt),
+    items: [{
+      itemType: 'warranty',
+      description: `Extended Warranty (${data.warrantyPeriod || '24 Months'}) — ${data.vehicleModel || 'Vehicle'}`,
+      quantity: 1,
+      unitPrice: subtotal,
+      taxRate: data.taxRate || 18,
+      taxAmount: taxAmt,
+      totalAmount: subtotal,
+    }],
+  }, userId);
+
+  const pdfPath = await generatePDF(bill.id);
+  return { id: bill.id, billNumber: bill.billNumber, pdfPath: pdfPath.pdfPath };
+};
+
 module.exports = {
-  createBill, createBillFromOrder, generatePDF, getBillDetail, listBills, listTaxes,
+  createBill, createBillFromOrder, createWarrantyBill, generatePDF, getBillDetail, listBills, listTaxes,
 };

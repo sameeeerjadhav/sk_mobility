@@ -3,9 +3,9 @@ import {
   Box, Typography, Grid, Button, Dialog, DialogTitle, DialogContent,
   DialogActions, TextField, MenuItem, Chip, Table, TableBody, TableCell,
   TableHead, TableRow, Paper, IconButton, Tooltip, Alert, Skeleton,
-  InputAdornment, DialogContentText,
+  InputAdornment, DialogContentText, Tabs, Tab,
 } from '@mui/material';
-import { Add, Delete, Edit, Receipt, CalendarMonth, Category } from '@mui/icons-material';
+import { Add, Delete, Edit, Receipt, CalendarMonth, Category, Tune } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { expensesAPI } from '../services';
 import StatCard from '../components/StatCard';
@@ -18,6 +18,53 @@ const EMPTY_FORM = () => ({
   description: '',
   paid_by: '',
 });
+
+// ── Category Dialog (Add / Edit) ─────────────────────────────────────────────
+function CategoryDialog({ open, onClose, editItem }) {
+  const qc = useQueryClient();
+  const isEdit = !!editItem;
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (open) {
+      setName(isEdit ? editItem.name : '');
+      setDesc(isEdit ? editItem.description || '' : '');
+      setError('');
+      mut.reset();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, editItem]);
+
+  const mut = useMutation({
+    mutationFn: (data) => isEdit ? expensesAPI.updateCategory(editItem.id, data) : expensesAPI.createCategory(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['expenses'] }); onClose(); },
+  });
+
+  const handleSubmit = () => {
+    if (!name.trim()) { setError('Category name is required'); return; }
+    mut.mutate({ name: name.trim(), description: desc.trim() || null });
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: '16px' } }}>
+      <DialogTitle fontWeight={700}>{isEdit ? 'Edit Category' : 'Add Category'}</DialogTitle>
+      <DialogContent sx={{ pt: 1 }}>
+        <TextField fullWidth label="Category Name" value={name} onChange={(e) => { setName(e.target.value); setError(''); }}
+          required error={!!error} helperText={error} sx={{ mb: 2, mt: 1 }} placeholder="e.g. Rent, Utilities, Salary" />
+        <TextField fullWidth label="Description (optional)" value={desc} onChange={(e) => setDesc(e.target.value)} multiline rows={2} />
+        {mut.isError && <Alert severity="error" sx={{ mt: 2 }}>{mut.error?.response?.data?.message || 'Failed'}</Alert>}
+      </DialogContent>
+      <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+        <Button onClick={onClose} variant="outlined" disabled={mut.isPending}>Cancel</Button>
+        <Button onClick={handleSubmit} variant="contained" disabled={mut.isPending} sx={{ minWidth: 120 }}>
+          {mut.isPending ? 'Saving...' : (isEdit ? 'Save Changes' : 'Add Category')}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 // ── Add / Edit Expense Dialog ────────────────────────────────────────────────
 
@@ -187,9 +234,13 @@ function DeleteConfirmDialog({ open, onClose, onConfirm, expense, loading }) {
 
 export default function ExpensesPage() {
   const now = new Date();
+  const [tab, setTab] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [catDialog, setCatDialog] = useState(false);
+  const [editCat, setEditCat] = useState(null);
+  const [deleteCat, setDeleteCat] = useState(null);
   const [filterMonth, setFilterMonth] = useState(now.getMonth() + 1);
   const [filterYear, setFilterYear] = useState(now.getFullYear());
 
@@ -210,10 +261,11 @@ export default function ExpensesPage() {
 
   const deleteMut = useMutation({
     mutationFn: (id) => expensesAPI.delete(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['expenses'] });
-      setDeleteTarget(null);
-    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['expenses'] }); setDeleteTarget(null); },
+  });
+  const deleteCatMut = useMutation({
+    mutationFn: (id) => expensesAPI.deleteCategory(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['expenses'] }); setDeleteCat(null); },
   });
 
   const expenses = expData?.data || [];
@@ -238,7 +290,10 @@ export default function ExpensesPage() {
           <Typography variant="h5" fontWeight={700} color="#0f172a">Office Expenses</Typography>
           <Typography variant="body2" color="#64748b">Track all office and operational expenses</Typography>
         </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={openAdd}>Add Expense</Button>
+        <Box display="flex" gap={1}>
+          <Button variant="outlined" startIcon={<Tune />} onClick={() => setTab(1)}>Manage Categories</Button>
+          <Button variant="contained" startIcon={<Add />} onClick={openAdd}>Add Expense</Button>
+        </Box>
       </Box>
 
       {/* Stats */}
@@ -255,18 +310,21 @@ export default function ExpensesPage() {
         ))}
       </Grid>
 
+      {/* Tabs */}
+      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}>
+        <Tab label="Expenses" icon={<Receipt />} iconPosition="start" />
+        <Tab label="Manage Categories" icon={<Category />} iconPosition="start" />
+      </Tabs>
+
+      {tab === 0 && (
+        <>
       {/* Category breakdown */}
       {Object.keys(byCat).length > 0 && (
         <Box mb={2.5} display="flex" gap={1} flexWrap="wrap" alignItems="center">
           <Typography variant="caption" fontWeight={700} color="#64748b" sx={{ mr: 0.5 }}>Breakdown:</Typography>
           {Object.entries(byCat).sort((a, b) => b[1] - a[1]).map(([cat, amt]) => (
-            <Chip
-              key={cat}
-              label={`${cat}  ₹${Number(amt).toLocaleString('en-IN')}`}
-              size="small"
-              variant="outlined"
-              sx={{ fontWeight: 600, fontSize: '12px' }}
-            />
+            <Chip key={cat} label={`${cat}  ₹${Number(amt).toLocaleString('en-IN')}`}
+              size="small" variant="outlined" sx={{ fontWeight: 600, fontSize: '12px' }} />
           ))}
         </Box>
       )}
@@ -357,8 +415,52 @@ export default function ExpensesPage() {
           </Table>
         )}
       </Paper>
+      </>
+      )}
 
-      {/* Add/Edit Dialog */}
+      {/* Tab 1: Category Management */}
+      {tab === 1 && (
+        <Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography fontWeight={700}>Expense Categories ({categories.length})</Typography>
+            <Button variant="contained" startIcon={<Add />} onClick={() => { setEditCat(null); setCatDialog(true); }}>
+              Add Category
+            </Button>
+          </Box>
+          <Paper sx={{ borderRadius: '16px', overflow: 'hidden' }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {['Category Name', 'Description', 'Actions'].map(h => <TableCell key={h}>{h}</TableCell>)}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {categories.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} align="center" sx={{ py: 6, color: '#94a3b8' }}>
+                      <Category sx={{ fontSize: 40, color: '#e2e8f0', mb: 1 }} />
+                      <Typography variant="body2">No categories yet. Add one to get started.</Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : categories.map(cat => (
+                  <TableRow key={cat.id} hover>
+                    <TableCell sx={{ fontWeight: 600 }}>{cat.name}</TableCell>
+                    <TableCell sx={{ color: '#64748b' }}>{cat.description || '—'}</TableCell>
+                    <TableCell>
+                      <Box display="flex" gap={0.5}>
+                        <Tooltip title="Edit"><IconButton size="small" onClick={() => { setEditCat(cat); setCatDialog(true); }} sx={{ color: '#6366f1' }}><Edit fontSize="small" /></IconButton></Tooltip>
+                        <Tooltip title="Delete"><IconButton size="small" onClick={() => setDeleteCat(cat)} sx={{ color: '#ef4444' }}><Delete fontSize="small" /></IconButton></Tooltip>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Box>
+      )}
+
+      {/* Expense Add/Edit Dialog */}
       <ExpenseDialog
         open={dialogOpen}
         onClose={closeDialog}
@@ -366,7 +468,14 @@ export default function ExpensesPage() {
         editItem={editItem}
       />
 
-      {/* Delete Confirm Dialog */}
+      {/* Category Add/Edit Dialog */}
+      <CategoryDialog
+        open={catDialog}
+        onClose={() => { setCatDialog(false); setEditCat(null); }}
+        editItem={editCat}
+      />
+
+      {/* Delete Expense Confirm */}
       <DeleteConfirmDialog
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
@@ -374,6 +483,22 @@ export default function ExpensesPage() {
         expense={deleteTarget}
         loading={deleteMut.isPending}
       />
+
+      {/* Delete Category Confirm */}
+      <Dialog open={!!deleteCat} onClose={() => setDeleteCat(null)} maxWidth="xs" fullWidth PaperProps={{ sx: { borderRadius: '16px' } }}>
+        <DialogTitle fontWeight={700} color="error.main">Delete Category?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Delete category <strong>&quot;{deleteCat?.name}&quot;</strong>? Expenses using this category will become uncategorized.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+          <Button onClick={() => setDeleteCat(null)} variant="outlined" disabled={deleteCatMut.isPending}>Cancel</Button>
+          <Button onClick={() => deleteCatMut.mutate(deleteCat.id)} color="error" variant="contained" disabled={deleteCatMut.isPending}>
+            {deleteCatMut.isPending ? 'Deleting...' : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

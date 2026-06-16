@@ -33,7 +33,10 @@ export default function OrdersPage() {
     dealerId: '', deliveryAddress: '', notes: '', expectedDeliveryDate: '', items: [{ ...emptyItem }],
   });
   const [customerForm, setCustomerForm] = useState({
-    customerName: '', customerPhone: '', customerEmail: '',
+    customerName: '', customerPhone: '', customerEmail: '', customerAddress: '',
+    customerAadhaar: '', customerPan: '',
+    chassisNo: '', motorNo: '', batteryCapacity: '', color: '',
+    pmDriveIncentive: '', stateSubsidy: '',
     deliveryAddress: '', notes: '', expectedDeliveryDate: '', items: [{ ...emptyItem }],
   });
 
@@ -85,7 +88,10 @@ export default function OrdersPage() {
   const resetForms = () => {
     setDealerForm({ dealerId: '', deliveryAddress: '', notes: '', expectedDeliveryDate: '', items: [{ ...emptyItem }] });
     setCustomerForm({
-      customerName: '', customerPhone: '', customerEmail: '',
+      customerName: '', customerPhone: '', customerEmail: '', customerAddress: '',
+      customerAadhaar: '', customerPan: '',
+      chassisNo: '', motorNo: '', batteryCapacity: '', color: '',
+      pmDriveIncentive: '', stateSubsidy: '',
       deliveryAddress: '', notes: '', expectedDeliveryDate: '', items: [{ ...emptyItem }],
     });
   };
@@ -186,6 +192,15 @@ export default function OrdersPage() {
       payload.customerName = customerForm.customerName.trim();
       payload.customerPhone = customerForm.customerPhone.trim();
       payload.customerEmail = customerForm.customerEmail.trim() || undefined;
+      payload.customerAddress = customerForm.customerAddress.trim() || undefined;
+      payload.customerAadhaar = customerForm.customerAadhaar.trim() || undefined;
+      payload.customerPan = customerForm.customerPan.trim() || undefined;
+      payload.chassisNo = customerForm.chassisNo.trim() || undefined;
+      payload.motorNo = customerForm.motorNo.trim() || undefined;
+      payload.batteryCapacity = customerForm.batteryCapacity.trim() || undefined;
+      payload.color = customerForm.color.trim() || undefined;
+      payload.pmDriveIncentive = customerForm.pmDriveIncentive ? Number(customerForm.pmDriveIncentive) : 0;
+      payload.stateSubsidy = customerForm.stateSubsidy ? Number(customerForm.stateSubsidy) : 0;
       if (!payload.customerName || !payload.customerPhone) {
         setError('Customer name and phone are required');
         return;
@@ -275,11 +290,43 @@ export default function OrdersPage() {
                 <Grid item xs={12} sm={6}>
                   <TextField fullWidth required label="Customer Phone" value={customerForm.customerPhone} onChange={(e) => setCustomerForm({ ...customerForm, customerPhone: e.target.value })} />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField fullWidth label="Customer Email" type="email" value={customerForm.customerEmail} onChange={(e) => setCustomerForm({ ...customerForm, customerEmail: e.target.value })} />
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="Customer Aadhaar" value={customerForm.customerAadhaar} onChange={(e) => setCustomerForm({ ...customerForm, customerAadhaar: e.target.value })} inputProps={{ maxLength: 12 }} placeholder="12-digit Aadhaar" />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="Customer PAN" value={customerForm.customerPan} onChange={(e) => setCustomerForm({ ...customerForm, customerPan: e.target.value.toUpperCase() })} inputProps={{ maxLength: 10 }} placeholder="e.g. ABCDE1234F" />
+                </Grid>
                 <Grid item xs={12}>
-                  <Typography variant="subtitle2" gutterBottom>Order Items</Typography>
+                  <TextField fullWidth multiline rows={2} label="Customer Address" value={customerForm.customerAddress} onChange={(e) => setCustomerForm({ ...customerForm, customerAddress: e.target.value })} />
+                </Grid>
+
+                <Grid item xs={12}><Typography variant="subtitle2" color="primary" gutterBottom>🚗 Vehicle Details (for Invoice)</Typography></Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="Chassis No." value={customerForm.chassisNo} onChange={(e) => setCustomerForm({ ...customerForm, chassisNo: e.target.value.toUpperCase() })} placeholder="e.g. MD2C59200TAB72430" />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="Motor No." value={customerForm.motorNo} onChange={(e) => setCustomerForm({ ...customerForm, motorNo: e.target.value.toUpperCase() })} placeholder="e.g. E20ATB84233" />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="Battery Capacity" value={customerForm.batteryCapacity} onChange={(e) => setCustomerForm({ ...customerForm, batteryCapacity: e.target.value })} placeholder="e.g. 3.5 KWH" />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="Color" value={customerForm.color} onChange={(e) => setCustomerForm({ ...customerForm, color: e.target.value })} placeholder="e.g. Brooklyn Black" />
+                </Grid>
+
+                <Grid item xs={12}><Typography variant="subtitle2" color="primary" gutterBottom>💰 Subsidies / Incentives</Typography></Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="PM E-DRIVE Incentive (₹)" type="number" value={customerForm.pmDriveIncentive} onChange={(e) => setCustomerForm({ ...customerForm, pmDriveIncentive: e.target.value })} placeholder="e.g. 5000" />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField fullWidth label="State Govt. Subsidy (₹)" type="number" value={customerForm.stateSubsidy} onChange={(e) => setCustomerForm({ ...customerForm, stateSubsidy: e.target.value })} />
+                </Grid>
+
+                <Grid item xs={12}><Typography variant="subtitle2" gutterBottom>Order Items</Typography></Grid>
+                <Grid item xs={12}>
                   {renderItemRows(customerForm, setCustomerForm)}
                   <Button size="small" onClick={() => addItemRow(customerForm, setCustomerForm)}>+ Add Item</Button>
                 </Grid>

@@ -92,9 +92,10 @@ export const sparePartsAPI = {
 };
 
 export const billingAPI = {
-  list: () => api.get('/bills'),
+  list: (params) => api.get('/bills', { params }),
   get: (id) => api.get(`/bills/${id}`),
   create: (data) => api.post('/bills', data),
+  createWarranty: (data) => api.post('/bills/warranty', data),
   pdf: (id) => api.get(`/bills/${id}/pdf`, { responseType: 'blob' }),
   taxes: () => api.get('/taxes'),
 };
@@ -144,6 +145,9 @@ export const partnersAPI = {
 export const expensesAPI = {
   stats: () => api.get('/expenses/stats'),
   categories: () => api.get('/expenses/categories'),
+  createCategory: (data) => api.post('/expenses/categories', data),
+  updateCategory: (id, data) => api.put(`/expenses/categories/${id}`, data),
+  deleteCategory: (id) => api.delete(`/expenses/categories/${id}`),
   list: (params) => api.get('/expenses', { params }),
   create: (data) => api.post('/expenses', data),
   update: (id, data) => api.put(`/expenses/${id}`, data),

@@ -81,6 +81,7 @@ router.get('/bills', authorize('view_billing'), c.listBills);
 router.get('/bills/:id/pdf', authorize('view_billing', 'view_orders'), c.generateBillPDF);
 router.get('/bills/:id', authorize('view_billing', 'view_orders'), c.getBill);
 router.post('/bills', authorize('manage_billing'), c.createBill);
+router.post('/bills/warranty', authorizeRoles('super_admin'), c.createWarrantyBill);
 
 // Admin
 router.get('/admin/users', authorize('manage_users'), c.listUsers);
@@ -123,6 +124,9 @@ router.delete('/partner-transactions/:id', authorizeRoles('super_admin'), c.dele
 // ─── OFFICE EXPENSES ─────────────────────────────────────────
 router.get('/expenses/stats', authorizeRoles('super_admin'), c.expenseStats);
 router.get('/expenses/categories', authorizeRoles('super_admin'), c.listExpenseCategories);
+router.post('/expenses/categories', authorizeRoles('super_admin'), c.createExpenseCategory);
+router.put('/expenses/categories/:id', authorizeRoles('super_admin'), c.updateExpenseCategory);
+router.delete('/expenses/categories/:id', authorizeRoles('super_admin'), c.deleteExpenseCategory);
 router.get('/expenses', authorizeRoles('super_admin'), c.listExpenses);
 router.post('/expenses', authorizeRoles('super_admin'), c.createExpense);
 router.put('/expenses/:id', authorizeRoles('super_admin'), c.updateExpense);
