@@ -213,23 +213,37 @@ export default function HRPage() {
                       <People sx={{ fontSize: 40, color: '#e2e8f0', display: 'block', mx: 'auto', mb: 1 }} />
                       <Button size="small" onClick={openAdd}>Add First Employee</Button>
                     </TableCell></TableRow>
-                  ) : employees.map(e => (
-                    <TableRow key={e.id} hover>
-                      <TableCell><Chip label={e.employee_code} size="small" sx={{ fontFamily: 'monospace', bgcolor: '#f1f5f9' }} /></TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>{e.first_name} {e.last_name}</TableCell>
-                      <TableCell>{e.department || '—'}</TableCell>
-                      <TableCell>{e.designation || '—'}</TableCell>
-                      <TableCell>₹{Number(e.salary||0).toLocaleString('en-IN')}</TableCell>
-                      <TableCell>{e.join_date ? new Date(e.join_date).toLocaleDateString('en-IN') : '—'}</TableCell>
-                      <TableCell><Chip label={e.status === 'active' ? 'Active' : 'Inactive'} size="small" color={e.status === 'active' ? 'success' : 'default'} icon={e.status === 'active' ? <CheckCircle sx={{ fontSize: '14px !important' }} /> : undefined} /></TableCell>
-                      <TableCell>
-                        <Box display="flex" gap={0.5}>
-                          <Tooltip title="Edit"><IconButton size="small" onClick={() => openEdit(e)} sx={{ color: '#6366f1', '&:hover': { bgcolor: '#eef2ff' } }}><Edit fontSize="small" /></IconButton></Tooltip>
-                          <Tooltip title="Delete"><IconButton size="small" onClick={() => setDeleteEmp(e)} sx={{ color: '#ef4444', '&:hover': { bgcolor: '#fef2f2' } }}><Delete fontSize="small" /></IconButton></Tooltip>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  ) : employees.map(e => {
+                    const hasData = e.first_name && e.first_name.trim();
+                    return (
+                      <TableRow key={e.id} hover sx={{ opacity: hasData ? 1 : 0.75, bgcolor: hasData ? 'inherit' : 'rgba(239,68,68,0.02)' }}>
+                        <TableCell><Chip label={e.employee_code || '—'} size="small" sx={{ fontFamily: 'monospace', bgcolor: '#f1f5f9' }} /></TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>
+                          {hasData ? `${e.first_name} ${e.last_name}` : (
+                            <Box display="flex" alignItems="center" gap={1}>
+                              <Typography sx={{ color: '#ef4444', fontSize: '13px', fontStyle: 'italic' }}>Incomplete — click Edit</Typography>
+                              <Tooltip title="Edit to fill in details">
+                                <IconButton size="small" onClick={() => openEdit(e)} sx={{ color: '#6366f1', padding: '2px' }}>
+                                  <Edit sx={{ fontSize: 14 }} />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          )}
+                        </TableCell>
+                        <TableCell>{e.department || '—'}</TableCell>
+                        <TableCell>{e.designation || '—'}</TableCell>
+                        <TableCell>₹{Number(e.salary||0).toLocaleString('en-IN')}</TableCell>
+                        <TableCell>{e.join_date ? new Date(e.join_date).toLocaleDateString('en-IN') : '—'}</TableCell>
+                        <TableCell><Chip label={e.status === 'active' ? 'Active' : 'Inactive'} size="small" color={e.status === 'active' ? 'success' : 'default'} icon={e.status === 'active' ? <CheckCircle sx={{ fontSize: '14px !important' }} /> : undefined} /></TableCell>
+                        <TableCell>
+                          <Box display="flex" gap={0.5}>
+                            <Tooltip title="Edit"><IconButton size="small" onClick={() => openEdit(e)} sx={{ color: '#6366f1', '&:hover': { bgcolor: '#eef2ff' } }}><Edit fontSize="small" /></IconButton></Tooltip>
+                            <Tooltip title="Delete"><IconButton size="small" onClick={() => setDeleteEmp(e)} sx={{ color: '#ef4444', '&:hover': { bgcolor: '#fef2f2' } }}><Delete fontSize="small" /></IconButton></Tooltip>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}
