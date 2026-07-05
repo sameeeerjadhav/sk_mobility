@@ -89,6 +89,10 @@ export const sparePartsAPI = {
   list: (params) => api.get('/spare-parts', { params }),
   stock: (params) => api.get('/spare-parts/stock', { params }),
   categories: () => api.get('/spare-parts/categories'),
+  create: (data) => api.post('/spare-parts', data),
+  update: (id, data) => api.put(`/spare-parts/${id}`, data),
+  remove: (id) => api.delete(`/spare-parts/${id}`),
+  recordUsage: (data) => api.post('/spare-parts/usage', data),
 };
 
 export const billingAPI = {

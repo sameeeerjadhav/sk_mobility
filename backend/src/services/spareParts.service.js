@@ -54,4 +54,37 @@ const listCategories = async () => {
   return rows;
 };
 
-module.exports = { listParts, listStock, recordUsage, listCategories };
+const createPart = async (body) => {
+  const { name, part_number, category_id, unit_price, description } = body;
+  if (!name?.trim()) throw new AppError('Part name is required', 400);
+  if (!part_number?.trim()) throw new AppError('Part number is required', 400);
+  const [result] = await db.query(
+    'INSERT INTO spare_parts (name, part_number, category_id, unit_price, description, is_active) VALUES (?,?,?,?,?,1)',
+    [name.trim(), part_number.trim(), category_id, unit_price || 0, description || null]
+  );
+  const [rows] = await db.query(
+    'SELECT sp.*, spc.name AS category_name FROM spare_parts sp JOIN spare_part_categories spc ON sp.category_id = spc.id WHERE sp.id = ?',
+    [result.insertId]
+  );
+  return rows[0];
+};
+
+const updatePart = async (id, body) => {
+  const fields = ['name', 'part_number', 'category_id', 'unit_price', 'description'];
+  const updates = fields.filter((f) => body[f] !== undefined).map((f) => `${f} = ?`);
+  const vals = fields.filter((f) => body[f] !== undefined).map((f) => body[f]);
+  if (!updates.length) throw new AppError('No fields to update', 400);
+  await db.query(`UPDATE spare_parts SET ${updates.join(', ')} WHERE id = ?`, [...vals, id]);
+  const [rows] = await db.query(
+    'SELECT sp.*, spc.name AS category_name FROM spare_parts sp JOIN spare_part_categories spc ON sp.category_id = spc.id WHERE sp.id = ?',
+    [id]
+  );
+  return rows[0];
+};
+
+const deletePart = async (id) => {
+  await db.query('UPDATE spare_parts SET is_active = 0 WHERE id = ?', [id]);
+};
+
+module.exports = { listParts, listStock, recordUsage, listCategories, createPart, updatePart, deletePart };
+

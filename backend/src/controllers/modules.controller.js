@@ -85,6 +85,9 @@ module.exports = {
   listSpareStock: wrap((req) => sparePartsService.listStock(req.query).then((data) => ({ data }))),
   recordSpareUsage: wrap((req) => sparePartsService.recordUsage(req.body, req.user.id).then(() => ({ data: { message: 'Usage recorded' } }))),
   listSpareCategories: wrap(() => sparePartsService.listCategories().then((data) => ({ data }))),
+  createSparePart: wrap((req) => sparePartsService.createPart(req.body).then((data) => ({ data }))),
+  updateSparePart: wrap((req) => sparePartsService.updatePart(req.params.id, req.body).then((data) => ({ data }))),
+  deleteSparePart: wrap((req) => sparePartsService.deletePart(req.params.id).then(() => ({ data: { message: 'Deleted' } }))),
 
   // Billing
   listBills: wrap((req) => billingService.listBills(req.query).then((data) => ({ data }))),

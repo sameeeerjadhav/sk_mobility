@@ -73,6 +73,9 @@ router.patch('/job-cards/:id', authorize('manage_services'), c.updateJobCard);
 router.get('/spare-parts/categories', authorize('view_spare_parts'), c.listSpareCategories);
 router.get('/spare-parts/stock', authorize('view_spare_parts'), c.listSpareStock);
 router.get('/spare-parts', authorize('view_spare_parts'), c.listSpareParts);
+router.post('/spare-parts', authorize('manage_spare_parts'), c.createSparePart);
+router.put('/spare-parts/:id', authorize('manage_spare_parts'), c.updateSparePart);
+router.delete('/spare-parts/:id', authorize('manage_spare_parts'), c.deleteSparePart);
 router.post('/spare-parts/usage', authorize('manage_spare_parts'), c.recordSpareUsage);
 
 // Billing
