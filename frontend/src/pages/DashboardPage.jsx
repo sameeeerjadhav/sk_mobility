@@ -137,7 +137,7 @@ export default function DashboardPage() {
     datasets: [{
       label: 'Revenue',
       data: revenueData,
-      borderColor: '#6366f1',
+      borderColor: '#0d9488',
       backgroundColor: (ctx) => {
         const chart = ctx.chart;
         const { ctx: c, chartArea } = chart;
@@ -197,19 +197,19 @@ export default function DashboardPage() {
         mb: 4,
         p: 3,
         borderRadius: '20px',
-        background: 'linear-gradient(135deg, #0f1729 0%, #1e1b4b 50%, #312e81 100%)',
+        background: 'linear-gradient(135deg, #0f2a27 0%, #134e4a 50%, #0f766e 100%)',
         position: 'relative',
         overflow: 'hidden',
       }}>
         {/* Background decoration */}
         <Box sx={{
           position: 'absolute', width: 300, height: 300, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(13,148,136,0.3) 0%, transparent 70%)',
           top: -100, right: -50, pointerEvents: 'none',
         }} />
         <Box sx={{
           position: 'absolute', width: 200, height: 200, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(20,184,166,0.2) 0%, transparent 70%)',
           bottom: -80, left: 200, pointerEvents: 'none',
         }} />
 
@@ -286,8 +286,8 @@ export default function DashboardPage() {
               bgcolor: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
               borderRadius: '100px', px: 2, py: 0.5,
             }}>
-              <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#6366f1' }} />
-              <Typography sx={{ fontSize: '11px', fontWeight: 700, color: '#6366f1', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#0d9488' }} />
+              <Typography sx={{ fontSize: '11px', fontWeight: 700, color: '#0d9488', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 HR · Finance · Operations
               </Typography>
             </Box>
@@ -360,7 +360,7 @@ export default function DashboardPage() {
                   bgcolor: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
                   borderRadius: '8px', px: 1.5, py: 0.5,
                 }}>
-                  <Typography sx={{ fontSize: '12px', fontWeight: 700, color: '#6366f1' }}>12 Months</Typography>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 700, color: '#0d9488' }}>12 Months</Typography>
                 </Box>
               </Box>
               <Box sx={{ height: 260 }}>

@@ -7,7 +7,7 @@ import {
   Menu as MenuIcon, Dashboard, Store, DirectionsCar, ShoppingCart, Payment,
   Inventory, People, Build, Logout, Notifications, Receipt,
   AdminPanelSettings, Assessment, Handyman, Search, Settings, ElectricCar,
-  Groups, Handshake, AccountBalance, RequestQuote, KeyboardArrowRight,
+  Groups, Handshake, AccountBalance, RequestQuote,
 } from '@mui/icons-material';
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
@@ -17,46 +17,48 @@ import { logout } from '../store/authSlice';
 import { useAuth, isSuperAdmin } from '../hooks/useAuth';
 import { notificationsAPI } from '../services';
 
-const DRAWER_WIDTH = 260;
+const DRAWER_WIDTH = 240;
 
-// Sidebar dark palette
+// ── Light sidebar palette (matches 3D Shikshan) ────────────────────────────
 const SB = {
-  bg: '#0f1729',
-  surface: '#162039',
-  hover: 'rgba(255,255,255,0.06)',
-  active: 'rgba(99,102,241,0.18)',
-  activeBorder: '#6366f1',
-  text: 'rgba(255,255,255,0.85)',
-  muted: 'rgba(255,255,255,0.4)',
-  label: 'rgba(255,255,255,0.25)',
-  divider: 'rgba(255,255,255,0.07)',
+  bg:          '#ffffff',
+  hover:       'rgba(13,148,136,0.06)',
+  active:      'rgba(13,148,136,0.10)',
+  activeBorder:'#0d9488',
+  activeText:  '#0f766e',
+  activeIcon:  '#0d9488',
+  text:        '#334155',
+  muted:       '#94a3b8',
+  label:       '#94a3b8',
+  divider:     '#f1f5f9',
+  border:      '#e2e8f0',
 };
 
 const adminMenu = [
-  { section: 'OVERVIEW', items: [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
-    { text: 'Reports', icon: <Assessment />, path: '/reports' },
+  { section: 'MAIN', items: [
+    { text: 'Dashboard',    icon: <Dashboard />,    path: '/dashboard' },
+    { text: 'Reports',      icon: <Assessment />,   path: '/reports' },
   ]},
   { section: 'MANAGEMENT', items: [
-    { text: 'Dealers', icon: <Store />, path: '/dealers' },
-    { text: 'Vehicles', icon: <DirectionsCar />, path: '/vehicles' },
-    { text: 'Orders', icon: <ShoppingCart />, path: '/orders' },
-    { text: 'Leads', icon: <People />, path: '/leads' },
+    { text: 'Dealers',      icon: <Store />,         path: '/dealers' },
+    { text: 'Vehicles',     icon: <DirectionsCar />, path: '/vehicles' },
+    { text: 'Orders',       icon: <ShoppingCart />,  path: '/orders' },
+    { text: 'Leads',        icon: <People />,        path: '/leads' },
   ]},
   { section: 'FINANCE', items: [
-    { text: 'Payments', icon: <Payment />, path: '/payments' },
-    { text: 'Billing', icon: <Receipt />, path: '/billing' },
+    { text: 'Payments',     icon: <Payment />,       path: '/payments' },
+    { text: 'Billing',      icon: <Receipt />,       path: '/billing' },
   ]},
   { section: 'OPERATIONS', items: [
-    { text: 'Inventory', icon: <Inventory />, path: '/inventory' },
-    { text: 'Services', icon: <Build />, path: '/services' },
-    { text: 'Spare Parts', icon: <Handyman />, path: '/spare-parts' },
+    { text: 'Inventory',    icon: <Inventory />,     path: '/inventory' },
+    { text: 'Services',     icon: <Build />,         path: '/services' },
+    { text: 'Spare Parts',  icon: <Handyman />,      path: '/spare-parts' },
   ]},
   { section: 'BUSINESS', items: [
-    { text: 'HR Management', icon: <Groups />, path: '/hr' },
-    { text: 'Partners', icon: <Handshake />, path: '/partners' },
-    { text: 'Office Expenses', icon: <RequestQuote />, path: '/expenses' },
-    { text: 'Bank & Loans', icon: <AccountBalance />, path: '/finance' },
+    { text: 'HR Management',   icon: <Groups />,        path: '/hr' },
+    { text: 'Partners',        icon: <Handshake />,     path: '/partners' },
+    { text: 'Office Expenses', icon: <RequestQuote />,  path: '/expenses' },
+    { text: 'Bank & Loans',    icon: <AccountBalance />,path: '/finance' },
   ]},
   { section: 'SYSTEM', items: [
     { text: 'Admin Panel', icon: <AdminPanelSettings />, path: '/admin' },
@@ -64,14 +66,14 @@ const adminMenu = [
 ];
 
 const dealerMenu = [
-  { section: 'OVERVIEW', items: [
+  { section: 'MAIN', items: [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
   ]},
   { section: 'BUSINESS', items: [
     { text: 'Vehicles', icon: <DirectionsCar />, path: '/vehicles' },
-    { text: 'Orders', icon: <ShoppingCart />, path: '/orders' },
-    { text: 'Payments', icon: <Payment />, path: '/payments' },
-    { text: 'Leads', icon: <People />, path: '/leads' },
+    { text: 'Orders',   icon: <ShoppingCart />,  path: '/orders' },
+    { text: 'Payments', icon: <Payment />,        path: '/payments' },
+    { text: 'Leads',    icon: <People />,         path: '/leads' },
   ]},
   { section: 'SERVICE', items: [
     { text: 'Services', icon: <Build />, path: '/services' },
@@ -89,7 +91,7 @@ export default function MainLayout() {
   const { user } = useAuth();
 
   const menuGroups = isSuperAdmin(user) ? adminMenu : dealerMenu;
-  const allItems = menuGroups.flatMap(g => g.items);
+  const allItems = menuGroups.flatMap((g) => g.items);
 
   const { data: unreadData } = useQuery({
     queryKey: ['notifications-unread'],
@@ -103,18 +105,18 @@ export default function MainLayout() {
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: SB.bg }}>
 
       {/* ── Logo ── */}
-      <Box sx={{ px: 3, py: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box sx={{ px: 2.5, py: 2.5, display: 'flex', alignItems: 'center', gap: 1.5, borderBottom: `1px solid ${SB.divider}` }}>
         <Box sx={{
-          width: 38, height: 38, borderRadius: '12px',
-          background: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
+          width: 36, height: 36, borderRadius: '10px',
+          background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(99,102,241,0.5)',
           flexShrink: 0,
+          boxShadow: '0 2px 8px rgba(13,148,136,0.35)',
         }}>
-          <ElectricCar sx={{ color: '#fff', fontSize: 20 }} />
+          <ElectricCar sx={{ color: '#fff', fontSize: 18 }} />
         </Box>
         <Box>
-          <Typography sx={{ fontWeight: 800, fontSize: '15px', color: '#fff', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
+          <Typography sx={{ fontWeight: 800, fontSize: '15px', color: '#0f172a', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
             SK Mobility
           </Typography>
           <Typography sx={{ fontSize: '11px', color: SB.muted, lineHeight: 1 }}>
@@ -122,8 +124,6 @@ export default function MainLayout() {
           </Typography>
         </Box>
       </Box>
-
-      <Box sx={{ mx: 2.5, height: '1px', bgcolor: SB.divider }} />
 
       {/* ── Nav ── */}
       <Box sx={{
@@ -133,9 +133,9 @@ export default function MainLayout() {
         {menuGroups.map((group, gi) => (
           <Box key={group.section} mb={0.5} mt={gi > 0 ? 1.5 : 0}>
             <Typography sx={{
-              px: 1.5, pb: 0.75, pt: 0.25, display: 'block',
-              fontWeight: 700, fontSize: '10px', color: SB.label,
-              letterSpacing: '0.12em', textTransform: 'uppercase',
+              px: 1, pb: 0.75, pt: 0.25, display: 'block',
+              fontWeight: 700, fontSize: '10.5px', color: SB.label,
+              letterSpacing: '0.1em', textTransform: 'uppercase',
             }}>
               {group.section}
             </Typography>
@@ -147,14 +147,11 @@ export default function MainLayout() {
                   selected={active}
                   onClick={() => { navigate(item.path); setMobileOpen(false); }}
                   sx={{
-                    borderRadius: '10px',
-                    mb: 0.25, px: 1.5, py: 0.85,
-                    position: 'relative',
+                    borderRadius: '8px',
+                    mb: 0.25, px: 1.25, py: 0.75,
                     backgroundColor: active ? SB.active : 'transparent',
                     borderLeft: active ? `3px solid ${SB.activeBorder}` : '3px solid transparent',
-                    '&:hover': {
-                      backgroundColor: active ? SB.active : SB.hover,
-                    },
+                    '&:hover': { backgroundColor: active ? SB.active : SB.hover },
                     '&.Mui-selected': {
                       backgroundColor: SB.active,
                       '&:hover': { backgroundColor: SB.active },
@@ -163,24 +160,22 @@ export default function MainLayout() {
                   }}
                 >
                   <ListItemIcon sx={{
-                    minWidth: 34,
-                    color: active ? '#818cf8' : SB.muted,
+                    minWidth: 32,
+                    color: active ? SB.activeIcon : SB.muted,
                     transition: 'color 0.15s',
+                    '& svg': { fontSize: 18 },
                   }}>
-                    {item.icon && <Box sx={{ fontSize: 18, display: 'flex' }}>{item.icon}</Box>}
+                    {item.icon}
                   </ListItemIcon>
                   <ListItemText
                     primary={item.text}
                     primaryTypographyProps={{
                       fontSize: '13.5px',
                       fontWeight: active ? 700 : 500,
-                      color: active ? '#e0e7ff' : SB.text,
-                      letterSpacing: '-0.01em',
+                      color: active ? SB.activeText : SB.text,
+                      letterSpacing: '-0.005em',
                     }}
                   />
-                  {active && (
-                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#818cf8', flexShrink: 0, ml: 0.5 }} />
-                  )}
                 </ListItemButton>
               );
             })}
@@ -188,41 +183,26 @@ export default function MainLayout() {
         ))}
       </Box>
 
-      <Box sx={{ mx: 2.5, height: '1px', bgcolor: SB.divider }} />
-
-      {/* ── User Card ── */}
-      <Box sx={{ p: 2 }}>
-        <Box sx={{
-          display: 'flex', alignItems: 'center', gap: 1.5,
-          p: 1.5, borderRadius: '12px', bgcolor: SB.surface,
-          border: `1px solid ${SB.divider}`,
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          '&:hover': { bgcolor: 'rgba(255,255,255,0.08)', borderColor: 'rgba(99,102,241,0.4)' },
-        }}
-          onClick={(e) => setAnchorEl(e.currentTarget)}
+      {/* ── Sign Out ── */}
+      <Box sx={{ px: 1.5, pb: 2, borderTop: `1px solid ${SB.divider}`, pt: 1.5 }}>
+        <ListItemButton
+          onClick={() => dispatch(logout()).then(() => navigate('/login'))}
+          sx={{
+            borderRadius: '8px', px: 1.25, py: 0.85,
+            '&:hover': { bgcolor: 'rgba(239,68,68,0.07)' },
+          }}
         >
-          <Avatar sx={{
-            width: 32, height: 32, flexShrink: 0,
-            background: 'linear-gradient(135deg, #6366f1, #4338ca)',
-            fontSize: '12px', fontWeight: 700,
-            boxShadow: '0 2px 8px rgba(99,102,241,0.4)',
-          }}>
-            {user?.first_name?.[0]}{user?.last_name?.[0]}
-          </Avatar>
-          <Box flex={1} minWidth={0}>
-            <Typography sx={{ fontSize: '13px', fontWeight: 700, color: '#fff', lineHeight: 1.2 }} noWrap>
-              {user?.first_name} {user?.last_name}
-            </Typography>
-            <Typography sx={{ fontSize: '11px', color: SB.muted, lineHeight: 1.3, textTransform: 'capitalize' }} noWrap>
-              {user?.role?.replace('_', ' ') || 'User'}
-            </Typography>
-          </Box>
-          <KeyboardArrowRight sx={{ fontSize: 16, color: SB.muted, flexShrink: 0 }} />
-        </Box>
+          <ListItemIcon sx={{ minWidth: 32, color: '#ef4444', '& svg': { fontSize: 18 } }}>
+            <Logout />
+          </ListItemIcon>
+          <ListItemText
+            primary="Sign Out"
+            primaryTypographyProps={{ fontSize: '13.5px', fontWeight: 600, color: '#ef4444' }}
+          />
+        </ListItemButton>
       </Box>
 
-      {/* User dropdown menu */}
+      {/* User dropdown */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -232,7 +212,7 @@ export default function MainLayout() {
         PaperProps={{
           sx: {
             mb: 1, minWidth: 200, border: '1px solid #f1f5f9',
-            borderRadius: '14px', boxShadow: '0 16px 40px rgba(0,0,0,0.14)',
+            borderRadius: '12px', boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
           },
         }}
       >
@@ -246,38 +226,31 @@ export default function MainLayout() {
         <MenuItem onClick={() => { navigate('/profile'); setAnchorEl(null); }} sx={{ py: 1.2, fontSize: '14px', gap: 1.5 }}>
           <Settings fontSize="small" sx={{ color: '#94a3b8' }} /> Profile & Settings
         </MenuItem>
-        <MenuItem
-          onClick={() => dispatch(logout()).then(() => navigate('/login'))}
-          sx={{ py: 1.2, fontSize: '14px', gap: 1.5, color: '#ef4444' }}
-        >
-          <Logout fontSize="small" /> Sign out
-        </MenuItem>
       </Menu>
     </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f0f4ff' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f0faf8' }}>
 
       {/* ── AppBar ── */}
       <AppBar
         position="fixed"
         elevation={0}
         sx={{
-          bgcolor: 'rgba(240,244,255,0.85)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          bgcolor: '#fff',
           color: 'text.primary',
-          borderBottom: '1px solid rgba(226,232,240,0.8)',
+          borderBottom: `1px solid ${SB.border}`,
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
           ml: { md: `${DRAWER_WIDTH}px` },
           zIndex: (t) => t.zIndex.drawer - 1,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
         }}
       >
-        <Toolbar sx={{ gap: 2, minHeight: '64px !important', px: { xs: 2, md: 3 } }}>
+        <Toolbar sx={{ gap: 1.5, minHeight: '60px !important', px: { xs: 2, md: 3 } }}>
           {isMobile && (
             <IconButton edge="start" onClick={() => setMobileOpen(!mobileOpen)} size="small"
-              sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', width: 36, height: 36 }}
+              sx={{ bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', width: 34, height: 34 }}
             >
               <MenuIcon sx={{ fontSize: 18 }} />
             </IconButton>
@@ -285,25 +258,24 @@ export default function MainLayout() {
 
           {/* Search bar */}
           <Box sx={{
-            display: 'flex', alignItems: 'center', gap: 1.5,
-            bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px',
-            px: 1.5, py: 0.75, flex: 1, maxWidth: 420,
-            transition: 'all 0.2s ease',
+            display: 'flex', alignItems: 'center', gap: 1,
+            bgcolor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px',
+            px: 1.5, py: 0.7, flex: 1, maxWidth: 380,
+            transition: 'all 0.15s ease',
             '&:focus-within': {
-              borderColor: '#6366f1',
-              boxShadow: '0 0 0 3px rgba(99,102,241,0.12)',
+              borderColor: '#0d9488',
+              boxShadow: '0 0 0 3px rgba(13,148,136,0.1)',
+              bgcolor: '#fff',
             },
           }}>
-            <Search sx={{ fontSize: 17, color: '#94a3b8', flexShrink: 0 }} />
+            <Search sx={{ fontSize: 16, color: '#94a3b8', flexShrink: 0 }} />
             <InputBase
-              placeholder="Search orders, dealers, vehicles..."
-              sx={{ fontSize: '13.5px', color: '#374151', flex: 1 }}
+              placeholder="Search orders, dealers, ve..."
+              sx={{ fontSize: '13px', color: '#374151', flex: 1 }}
               inputProps={{ 'aria-label': 'global search' }}
             />
-            <Box sx={{
-              display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 0.5, flexShrink: 0,
-            }}>
-              <Typography sx={{ bgcolor: '#f1f5f9', color: '#94a3b8', px: 0.7, py: 0.15, borderRadius: '5px', fontSize: '11px', fontWeight: 600 }}>
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', flexShrink: 0 }}>
+              <Typography sx={{ bgcolor: '#e2e8f0', color: '#94a3b8', px: 0.7, py: 0.1, borderRadius: '4px', fontSize: '10.5px', fontWeight: 600 }}>
                 ⌘K
               </Typography>
             </Box>
@@ -311,15 +283,8 @@ export default function MainLayout() {
 
           <Box flex={1} />
 
-          {/* Page title on mobile */}
-          <Typography variant="subtitle1" fontWeight={700}
-            sx={{ display: { md: 'none' }, color: '#0f172a', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
-          >
-            {currentPage}
-          </Typography>
-
-          {/* Breadcrumb on desktop */}
-          <Typography variant="body2" fontWeight={600} color="#64748b"
+          {/* Current page title — desktop */}
+          <Typography variant="body2" fontWeight={700} color="#475569"
             sx={{ display: { xs: 'none', md: 'block' } }}
           >
             {currentPage}
@@ -333,13 +298,13 @@ export default function MainLayout() {
               size="small"
               onClick={() => navigate('/notifications')}
               sx={{
-                bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px',
-                width: 38, height: 38, transition: 'all 0.2s',
-                '&:hover': { borderColor: '#6366f1', bgcolor: 'rgba(99,102,241,0.04)', boxShadow: '0 2px 8px rgba(99,102,241,0.2)' },
+                border: '1px solid #e2e8f0', borderRadius: '8px',
+                width: 36, height: 36, transition: 'all 0.15s',
+                '&:hover': { borderColor: '#0d9488', bgcolor: 'rgba(13,148,136,0.05)' },
               }}
             >
               <Badge badgeContent={unreadData || 0} color="error">
-                <Notifications sx={{ fontSize: 18, color: '#374151' }} />
+                <Notifications sx={{ fontSize: 18, color: '#475569' }} />
               </Badge>
             </IconButton>
           </Tooltip>
@@ -349,17 +314,16 @@ export default function MainLayout() {
             onClick={(e) => setAnchorEl(e.currentTarget)}
             sx={{
               display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer',
-              bgcolor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px',
-              pl: 0.75, pr: 1.5, py: 0.6,
-              transition: 'all 0.2s',
-              '&:hover': { borderColor: '#6366f1', boxShadow: '0 2px 8px rgba(99,102,241,0.15)' },
+              border: '1px solid #e2e8f0', borderRadius: '10px',
+              pl: 0.75, pr: 1.5, py: 0.5,
+              transition: 'all 0.15s',
+              '&:hover': { borderColor: '#0d9488', boxShadow: '0 2px 8px rgba(13,148,136,0.12)' },
             }}
           >
             <Avatar sx={{
               width: 28, height: 28,
-              background: 'linear-gradient(135deg, #6366f1, #4338ca)',
+              bgcolor: '#0d9488',
               fontSize: '11px', fontWeight: 700,
-              boxShadow: '0 2px 6px rgba(99,102,241,0.3)',
             }}>
               {user?.first_name?.[0]}{user?.last_name?.[0]}
             </Avatar>
@@ -369,7 +333,11 @@ export default function MainLayout() {
               {user?.first_name}
             </Typography>
             {isSuperAdmin(user) && (
-              <Chip label="Admin" size="small" sx={{ height: 18, fontSize: '10px', bgcolor: 'rgba(99,102,241,0.1)', color: '#6366f1', display: { xs: 'none', lg: 'flex' } }} />
+              <Chip
+                label="Admin"
+                size="small"
+                sx={{ height: 18, fontSize: '10px', bgcolor: alpha('#0d9488', 0.1), color: '#0f766e', display: { xs: 'none', lg: 'flex' } }}
+              />
             )}
           </Box>
         </Toolbar>
@@ -383,14 +351,14 @@ export default function MainLayout() {
             open={mobileOpen}
             onClose={() => setMobileOpen(false)}
             ModalProps={{ keepMounted: true }}
-            sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, bgcolor: SB.bg, border: 'none', boxShadow: '8px 0 32px rgba(0,0,0,0.25)' } }}
+            sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, bgcolor: '#fff', border: 'none', boxShadow: '4px 0 24px rgba(0,0,0,0.1)' } }}
           >
             {drawer}
           </Drawer>
         ) : (
           <Drawer
             variant="permanent"
-            sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, bgcolor: SB.bg, border: 'none', boxShadow: '1px 0 0 rgba(255,255,255,0.05)' } }}
+            sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, bgcolor: '#fff', borderRight: `1px solid ${SB.border}`, boxShadow: 'none' } }}
             open
           >
             {drawer}
@@ -403,9 +371,9 @@ export default function MainLayout() {
         component="main"
         sx={{
           flexGrow: 1,
-          pt: '64px',
+          pt: '60px',
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          bgcolor: '#f0f4ff',
+          bgcolor: '#f0faf8',
           minHeight: '100vh',
         }}
       >

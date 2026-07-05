@@ -53,24 +53,24 @@ export default function LoginPage() {
         p: 5,
         position: 'relative',
         overflow: 'hidden',
-        background: 'linear-gradient(155deg, #0f1729 0%, #1e1b4b 40%, #312e81 70%, #4338ca 100%)',
+        background: 'linear-gradient(155deg, #0f2a27 0%, #134e4a 40%, #0f766e 70%, #0d9488 100%)',
       }}>
         {/* Animated blobs */}
         <Box sx={{
           position: 'absolute', width: 500, height: 500, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(13,148,136,0.35) 0%, transparent 70%)',
           top: -150, right: -150,
           animation: 'sk-pulse-ring 4s ease-in-out infinite',
         }} />
         <Box sx={{
           position: 'absolute', width: 350, height: 350, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(20,184,166,0.25) 0%, transparent 70%)',
           bottom: 100, left: -100,
           animation: 'sk-pulse-ring 5s ease-in-out infinite 1.5s',
         }} />
         <Box sx={{
           position: 'absolute', width: 200, height: 200, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(251,191,36,0.12) 0%, transparent 70%)',
           bottom: '40%', right: '10%',
           animation: 'sk-pulse-ring 6s ease-in-out infinite 0.5s',
         }} />
@@ -85,9 +85,9 @@ export default function LoginPage() {
         <Box display="flex" alignItems="center" gap={1.5} sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{
             width: 44, height: 44, borderRadius: '14px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
+            background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 8px 20px rgba(99,102,241,0.5)',
+            boxShadow: '0 8px 24px rgba(13,148,136,0.4)',
           }}>
             <ElectricCar sx={{ color: '#fff', fontSize: 24 }} />
           </Box>
@@ -105,11 +105,11 @@ export default function LoginPage() {
         <Box sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{
             display: 'inline-flex', alignItems: 'center', gap: 1,
-            bgcolor: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.35)',
+            bgcolor: 'rgba(13,148,136,0.2)', border: '1px solid rgba(13,148,136,0.35)',
             borderRadius: '100px', px: 1.5, py: 0.5, mb: 3,
           }}>
-            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#818cf8', animation: 'sk-pulse-ring 2s ease infinite' }} />
-            <Typography sx={{ fontSize: '12px', color: '#c7d2fe', fontWeight: 600, letterSpacing: '0.05em' }}>
+            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: '#5eead4', animation: 'sk-pulse-ring 2s ease infinite' }} />
+            <Typography sx={{ fontSize: '12px', color: '#99f6e4', fontWeight: 600, letterSpacing: '0.05em' }}>
               LIVE PLATFORM
             </Typography>
           </Box>
@@ -124,7 +124,7 @@ export default function LoginPage() {
           }}>
             Manage your EV<br />
             <Box component="span" sx={{
-              background: 'linear-gradient(90deg, #818cf8 0%, #34d399 100%)',
+              background: 'linear-gradient(90deg, #5eead4 0%, #4ade80 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
               dealer network
@@ -145,7 +145,7 @@ export default function LoginPage() {
                   bgcolor: 'rgba(255,255,255,0.08)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#818cf8',
+                  color: '#5eead4',
                 }}>
                   {f.icon}
                 </Box>
@@ -175,12 +175,12 @@ export default function LoginPage() {
         {/* Subtle background decoration */}
         <Box sx={{
           position: 'absolute', width: 600, height: 600, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(13,148,136,0.07) 0%, transparent 70%)',
           top: -200, right: -200, pointerEvents: 'none',
         }} />
         <Box sx={{
           position: 'absolute', width: 400, height: 400, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(13,148,136,0.05) 0%, transparent 70%)',
           bottom: -100, left: -100, pointerEvents: 'none',
         }} />
 
@@ -190,9 +190,9 @@ export default function LoginPage() {
           <Box sx={{ display: { md: 'none' }, mb: 5, textAlign: 'center' }}>
             <Box sx={{
               width: 56, height: 56, borderRadius: '16px',
-              background: 'linear-gradient(135deg, #6366f1, #4338ca)',
+              background: 'linear-gradient(135deg, #0d9488, #0f766e)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              mx: 'auto', mb: 2, boxShadow: '0 8px 24px rgba(99,102,241,0.4)',
+              mx: 'auto', mb: 2, boxShadow: '0 8px 24px rgba(13,148,136,0.4)',
             }}>
               <ElectricCar sx={{ color: '#fff', fontSize: 28 }} />
             </Box>
@@ -205,7 +205,7 @@ export default function LoginPage() {
             bgcolor: '#fff',
             borderRadius: '24px',
             p: { xs: 3, sm: 4 },
-            boxShadow: '0 4px 6px rgba(0,0,0,0.04), 0 10px 40px rgba(99,102,241,0.1)',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.04), 0 10px 40px rgba(13,148,136,0.1)',
             border: '1px solid rgba(226,232,240,0.8)',
           }}>
             <Typography sx={{ fontWeight: 800, fontSize: '26px', color: '#0f172a', letterSpacing: '-0.025em', mb: 0.5 }}>
@@ -233,7 +233,12 @@ export default function LoginPage() {
                   required
                   autoComplete="email"
                   size="small"
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+                  sx={{ 
+                    '& .MuiOutlinedInput-root': { 
+                      borderRadius: '10px',
+                      '&.Mui-focused fieldset': { borderColor: '#0d9488' }
+                    } 
+                  }}
                 />
               </Box>
 
@@ -243,7 +248,7 @@ export default function LoginPage() {
                     Password
                   </Typography>
                   <Link component={RouterLink} to="/forgot-password" sx={{
-                    color: '#6366f1', textDecoration: 'none', fontWeight: 600, fontSize: '13px',
+                    color: '#0d9488', textDecoration: 'none', fontWeight: 600, fontSize: '13px',
                     '&:hover': { textDecoration: 'underline' },
                   }}>
                     Forgot password?
@@ -258,7 +263,12 @@ export default function LoginPage() {
                   required
                   autoComplete="current-password"
                   size="small"
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+                  sx={{ 
+                    '& .MuiOutlinedInput-root': { 
+                      borderRadius: '10px',
+                      '&.Mui-focused fieldset': { borderColor: '#0d9488' }
+                    } 
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -279,11 +289,11 @@ export default function LoginPage() {
                 disabled={loading}
                 sx={{
                   py: 1.4, fontSize: '15px', fontWeight: 700, borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
-                  boxShadow: '0 4px 16px rgba(99,102,241,0.4)',
+                  background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+                  boxShadow: '0 4px 16px rgba(13,148,136,0.4)',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
-                    boxShadow: '0 6px 20px rgba(99,102,241,0.5)',
+                    background: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)',
+                    boxShadow: '0 6px 20px rgba(13,148,136,0.5)',
                     transform: 'translateY(-1px)',
                   },
                   letterSpacing: '-0.01em',
@@ -295,7 +305,7 @@ export default function LoginPage() {
 
             <Box mt={3} textAlign="center">
               <Link component={RouterLink} to="/dealer-register" sx={{
-                color: '#6366f1', textDecoration: 'none', fontWeight: 600, fontSize: '13.5px',
+                color: '#0d9488', textDecoration: 'none', fontWeight: 600, fontSize: '13.5px',
                 '&:hover': { textDecoration: 'underline' },
               }}>
                 New dealer? Request access →
